@@ -1,5 +1,5 @@
 <!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Проверка файлов MATILDA</title>
 <h1>Проверка пакета</h1><pre id="result">Проверка…</pre><script>
-(async()=>{const root=new URL('releases/v4/',location.href);const files=['loader.js','src/scene.js','assets/head.glb','assets/left-hand.glb','assets/right-hand.glb','assets/final-material/normal.webp'];
+(async()=>{const root=new URL('releases/v5/',location.href);const files=['loader.js','src/scene.js','src/ui.js','src/site.css','assets/head.glb','assets/left-hand.glb','assets/right-hand.glb','assets/final-material/normal.webp'];
 const lines=[];for(const name of files){try{const r=await fetch(new URL(name,root),{method:'HEAD',cache:'no-store'});lines.push((r.ok?'OK ':'ОШИБКА ')+name+' '+r.status+' '+r.headers.get('content-type'));}catch(e){lines.push('ОШИБКА '+name+' '+e.message)}}
 document.getElementById('result').textContent=lines.join('\n')+'\nЭто проверка файлов. Междоменный доступ нужно проверить с опубликованной тестовой страницы Tilda.';})();</script>
