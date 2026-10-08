@@ -1,0 +1,31 @@
+
+.scram:not([data-md-scram-prepared="1"]){opacity:0}
+.md-scram-waiting{opacity:0!important}
+.md-scram-fading{transition:opacity 1.2s cubic-bezier(.22,1,.36,1) !important}
+.md-scramble-source{visibility:hidden}
+.md-scramble-layer{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.md-scramble-char{position:absolute;display:block;opacity:0;white-space:pre;text-align:left;text-shadow:none}
+.md-scramble-char.md-scramble-glow{color:#914dff!important;text-shadow:none;filter:none;-webkit-text-stroke:0;outline:none}
+
+/* Desktop navigation starts on the hero heading's left grid line (802px). */
+#rec4460683201 [data-elem-id="1791097684579000001"]{left:802px!important}
+#rec4460683201 [data-elem-id="1791097697476000002"]{left:850px!important}
+#rec4460683201 [data-elem-id="1791097706471000003"]{left:915px!important}
+
+.gn-talk-relative{position:relative!important}
+.gn-talk .tn-atom:not([data-gn-talk-state="ready"]),.tn-elem[data-elem-id="1791097738699"] .tn-atom:not([data-gn-talk-state="ready"]){opacity:0}
+.gn-talk-webgl{position:absolute;pointer-events:none;opacity:0;z-index:2;transition:opacity .16s ease}
+.md-talk-hidden{opacity:0!important;pointer-events:none!important}
+.md-talk-return{transition:opacity .16s ease!important}
+@media(prefers-reduced-motion:reduce){.gn-talk-webgl{opacity:0!important}.md-talk-return{transition:none!important}}
+
+
+@media (hover:hover){
+#md-work-slider .md-work-card__image{background:#f6f6f6;transition:box-shadow .4s ease;}
+#md-work-slider .md-work-card__image-inner{transition:transform .6s cubic-bezier(.22,.61,.36,1),opacity .4s ease,filter .4s ease;}
+#md-work-slider .md-work-card__bottom{transition:opacity .35s ease;}
+#md-work-slider:has(.md-work-card:hover) .md-work-card:not(:hover) .md-work-card__image-inner{opacity:.24;filter:grayscale(1);}
+#md-work-slider:has(.md-work-card:hover) .md-work-card:not(:hover) .md-work-card__bottom{opacity:0;}
+#md-work-slider .md-work-card:hover .md-work-card__image-inner{transform:scale(1.055);opacity:1;filter:none;}
+#md-work-slider .md-work-card:hover .md-work-card__image{box-shadow:none;}
+}

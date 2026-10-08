@@ -1,0 +1,13 @@
+:root{--page-bg:#f6f6f6;--page-text:#111;--theme-border:#d4d4d4;color-scheme:light}
+
+html,body,#allrecords,#rec4460683201 .t396__artboard{background-color:var(--page-bg)!important;color:var(--page-text);transition:background-color .35s ease,color .35s ease}
+#rec4460683201 [data-elem-type="text"],#rec4460683201 [data-elem-type="text"] .tn-atom,#rec4460683201 [data-elem-type="text"] .tn-atom a,.md-work-card__bottom,.md-work-card__title,.md-work-card__number{color:var(--page-text)!important}
+#rec4460683201 [data-elem-id="1791120047222000001"] .tn-atom{background-color:var(--page-text)!important;color:var(--page-bg)!important}
+#rec4460683201 [data-elem-id="1791120047222000001"] .tn-atom__button-text{color:var(--page-bg)!important}
+.hero_home_cover{background-color:var(--page-bg)}
+.scram .md-scramble-char:not(.md-scramble-glow){color:var(--page-text)!important}
+:root[data-theme="dark"] #rec4460683201 [data-elem-id="1791097995971"] img{filter:invert(1)}
+.theme-switch{position:fixed;right:16px;top:55px;z-index:10000001;display:flex;gap:5px;padding:5px;border:1px solid var(--theme-border);border-radius:7px;background:var(--page-bg)}
+.theme-switch button{border:0;border-radius:3px;background:transparent;color:var(--page-text);padding:9px 10px;font:10px 'JetBrains Mono',monospace;cursor:pointer;letter-spacing:.02em}
+.theme-switch button[aria-pressed="true"]{background:var(--page-text);color:var(--page-bg)}
+.theme-switch button:focus-visible{outline:2px solid #914dff;outline-offset:2px}

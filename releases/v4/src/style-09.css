@@ -1,0 +1,8 @@
+
+.gn-talk-relative{position:relative !important}
+.gn-talk-webgl{position:absolute;left:-8px;top:-8px;width:calc(100% + 16px);height:calc(100% + 16px);pointer-events:none;display:none;z-index:2}
+.gn-talk-shader-active{background:transparent !important;background-image:none !important;border-color:transparent !important;overflow:visible !important}
+.gn-talk-shader-active .tn-atom__button-content,.gn-talk-shader-active .tn-atom__button-border{opacity:0 !important}
+.gn-talk-shader-active>.tn-atom__button-text{opacity:0 !important}
+@media(prefers-reduced-motion:reduce){.gn-talk-webgl{display:none !important}}
+@media(max-width:639px){.tn-elem[data-elem-id="1791097738699"]{left:auto !important;right:12px !important;top:10px !important;zoom:1 !important}}

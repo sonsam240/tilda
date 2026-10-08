@@ -1,0 +1,5 @@
+#md-project-details{position:fixed;z-index:20;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s; text-transform:uppercase;color:#111}#md-project-details.visible{opacity:1;visibility:visible;transition-delay:0s}#md-project-details h2{font-size:var(--project-title-size);line-height:1.05;font-weight:400;margin:0 0 30px}#md-project-details p{font-size:var(--project-body-size);line-height:1.2;font-weight:500;margin:0}#md-project-details .md-project-tasks{margin-top:70px;display:grid;gap:12px}
+#rec4460683201 [data-elem-id="1791098052216000015"]{transition:opacity .25s ease}.md-project-hover #rec4460683201 [data-elem-id="1791098052216000015"]{opacity:0!important;pointer-events:none}
+#md-work-slider .md-work-card img{transition:transform .65s cubic-bezier(.22,.61,.36,1)}#md-work-slider .md-work-card:hover img{transform:scale(1.055)}
+ .md-project-hover #rec4460683201 [data-elem-id="1791097955733000012"],.md-project-hover #rec4460683201 [data-elem-id="1791097995971"]{opacity:0!important;pointer-events:none}
+#md-project-details .md-project-tasks{position:absolute;left:0;top:var(--project-task-top);margin-top:0;width:100%}

@@ -1,0 +1,21 @@
+#md-project-speech,#md-head-note{
+  position:fixed;
+  z-index:10000006;
+  pointer-events:none;
+  box-sizing:border-box;
+  width:max-content;
+  max-width:min(320px,calc(100vw - 32px));
+  padding:12px 14px;
+  border-radius:6px;
+  overflow:hidden;
+  text-align:center;
+  background:rgba(255,255,255,.64);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  color:#111;
+  font:500 clamp(11px,.68vw,13px)/1.4 'JetBrains Mono',monospace;
+  opacity:0;
+  transform:translate(-50%,-100%);
+}
+
+#md-head-note{white-space:nowrap;}
