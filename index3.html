@@ -1,0 +1,141 @@
+<div id="head-tbt-test">
+  <div class="ht-stage"></div>
+  <div class="ht-panel">
+    <strong>HEAD / DESKTOP TBT TEST V3</strong>
+    <div class="ht-status">Подключение Three.js...</div>
+    <pre class="ht-metrics"></pre>
+    <button class="ht-replay" disabled>REPLAY ANIMATION</button>
+  </div>
+</div>
+<style>
+#head-tbt-test{position:relative;width:100%;height:100svh;min-height:500px;background:#e9e9e9;overflow:hidden;font:12px/1.7 monospace}
+#head-tbt-test .ht-stage{position:absolute;inset:0}
+#head-tbt-test canvas{display:block;width:100%;height:100%}
+#head-tbt-test .ht-panel{position:absolute;z-index:5;top:20px;left:20px;width:min(310px,calc(100% - 40px));box-sizing:border-box;background:#ffffffed;color:#111;padding:16px}
+#head-tbt-test .ht-status{margin:8px 0}
+#head-tbt-test .ht-metrics{font:inherit;white-space:pre-wrap;margin:8px 0}
+#head-tbt-test .ht-replay{padding:10px 12px;background:#111;color:white;border:0;width:100%;cursor:pointer;font:inherit}
+#head-tbt-test .ht-replay:disabled{opacity:.45;cursor:default}
+</style>
+<script type="module">
+import * as THREE from 'https://esm.sh/three@0.160.0';
+import { GLTFLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+
+// ТВОЯ МОДЕЛЬ: можно заменить URL на другой GLB для A/B-теста.
+const MODEL_URL = 'https://raw.githubusercontent.com/sonsam240/litehead/main/headlitenew.glb';
+const SETTINGS = {duration:1.25,startScale:0.12,startRX:0.18,startRY:-0.65,startRZ:-0.12,maxPixelRatio:1.5};
+const root=document.getElementById('head-tbt-test');
+if(root && !root.dataset.started){
+  root.dataset.started='1';
+  const stage=root.querySelector('.ht-stage');
+  const status=root.querySelector('.ht-status');
+  const metrics=root.querySelector('.ht-metrics');
+  const replay=root.querySelector('.ht-replay');
+  const start=performance.now();
+  const time={download:0,decoder:0,parse:0,compile:0,firstFrame:0,ready:0};
+  let scene,camera,renderer,model,baseScale=1,animation=null,raf=0,firstDraw=false;
+  let frames=0,fps=0,lastFps=performance.now(),lastUi=0;
+  const stamp=()=>performance.now()-start;
+  const nextFrame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
+  function updatePanel(){
+    const calls=renderer?renderer.info.render.calls:0;
+    const triangles=renderer?renderer.info.render.triangles:0;
+    metrics.textContent=`GLB download: ${time.download.toFixed(0)} ms\nMeshopt ready: ${time.decoder.toFixed(0)} ms\nGLB parse + decode: ${time.parse.toFixed(0)} ms\nShader precompile: SKIPPED\nFirst render CPU: ${time.compile.toFixed(1)} ms\nFirst frame: ${time.firstFrame.toFixed(0)} ms\nReady: ${time.ready.toFixed(0)} ms\nFPS during animation: ${fps}\nDraw calls: ${calls}\nTriangles: ${triangles}\nRender loop: ${raf?'ACTIVE':'STOPPED'}`;
+  }
+  function resize(){
+    if(!renderer)return;
+    const w=Math.max(1,stage.clientWidth),h=Math.max(1,stage.clientHeight);
+    camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);
+    if(model && !raf)renderer.render(scene,camera);
+  }
+  function elastic(t){return t===0||t===1?t:Math.pow(2,-10*t)*Math.sin((t*10-.75)*(2*Math.PI/3))+1}
+  function cubic(t){return 1-Math.pow(1-t,3)}
+  function tick(now){
+    raf=0;
+    if(!animation||!model)return;
+    const t=Math.min(1,(now-animation.start)/(SETTINGS.duration*1000));
+    model.scale.setScalar(baseScale*(SETTINGS.startScale+(1-SETTINGS.startScale)*elastic(t)));
+    const r=1-cubic(t);
+    model.rotation.set(SETTINGS.startRX*r,SETTINGS.startRY*r,SETTINGS.startRZ*r);
+    if(t===1){model.scale.setScalar(baseScale);model.rotation.set(0,0,0);animation=null;status.textContent='READY / renderer stopped';replay.disabled=false;}
+    const renderBegin=performance.now();
+    renderer.render(scene,camera);
+    if(!firstDraw){firstDraw=true;time.compile=performance.now()-renderBegin;time.firstFrame=stamp();}
+    frames++;
+    if(now-lastFps>=1000){fps=Math.round(1000*frames/(now-lastFps));frames=0;lastFps=now;}
+    if(now-lastUi>250){lastUi=now;updatePanel();}
+    if(animation){raf=requestAnimationFrame(tick);}else{updatePanel();}
+  }
+  function startAnimation(){
+    if(!model)return;
+    if(raf)cancelAnimationFrame(raf);
+    model.scale.setScalar(baseScale*SETTINGS.startScale);
+    model.rotation.set(SETTINGS.startRX,SETTINGS.startRY,SETTINGS.startRZ);
+    animation={start:performance.now()};
+    status.textContent='Анимация головы...';replay.disabled=true;
+    frames=0;lastFps=performance.now();
+    raf=requestAnimationFrame(tick);
+  }
+  replay.addEventListener('click',startAnimation);
+  window.addEventListener('resize',resize);
+  try{
+    status.textContent='Создание WebGL...';
+    scene=new THREE.Scene();scene.background=new THREE.Color(0xe9e9e9);
+    camera=new THREE.PerspectiveCamera(35,1,.01,100);camera.position.set(0,0,5);camera.lookAt(0,0,0);
+    renderer=new THREE.WebGLRenderer({antialias:false,alpha:false,powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,SETTINGS.maxPixelRatio));
+    renderer.outputColorSpace=THREE.SRGBColorSpace;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;
+    stage.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0xffffff,2));
+    const key=new THREE.DirectionalLight(0xffffff,2.5);key.position.set(3,5,6);scene.add(key);
+    const fill=new THREE.DirectionalLight(0xffffff,1);fill.position.set(-4,1,3);scene.add(fill);
+    resize();updatePanel();
+    status.textContent='Загрузка GLB...';
+    const d=performance.now();
+    const response=await fetch(MODEL_URL,{cache:'default'});
+    if(!response.ok)throw new Error('GLB HTTP '+response.status);
+    const buffer=await response.arrayBuffer();time.download=performance.now()-d;
+    // Проверка glTF JSON: декодер грузится ТОЛЬКО при EXT_meshopt_compression.
+    if(new DataView(buffer).getUint32(0,true)!==0x46546c67)throw new Error('Это не GLB');
+    const jsonLength=new DataView(buffer).getUint32(12,true);
+    const jsonType=new DataView(buffer).getUint32(16,true);
+    if(jsonType!==0x4e4f534a)throw new Error('Некорректный GLB JSON chunk');
+    const json=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,20,jsonLength)));
+    const usesMeshopt=(json.extensionsUsed||[]).includes('EXT_meshopt_compression')||(json.extensionsRequired||[]).includes('EXT_meshopt_compression');
+    const loader=new GLTFLoader();
+    if(usesMeshopt){
+      status.textContent='Подключение Meshopt...';
+      const t=performance.now();
+      const {MeshoptDecoder}=await import('https://esm.sh/meshoptimizer@0.20.0/meshopt_decoder.module.js');
+      await MeshoptDecoder.ready;
+      time.decoder=performance.now()-t;
+      loader.setMeshoptDecoder(MeshoptDecoder);
+    }
+    status.textContent='GLB parse + decode...';
+    await nextFrame();
+    const p=performance.now();
+    const gltf=await new Promise((resolve,reject)=>loader.parse(buffer,MODEL_URL.slice(0,MODEL_URL.lastIndexOf('/')+1),resolve,reject));
+    time.parse=performance.now()-p;
+    model=gltf.scene;
+    const box=new THREE.Box3().setFromObject(model);
+    const center=box.getCenter(new THREE.Vector3());
+    const size=box.getSize(new THREE.Vector3());
+    model.position.sub(center);
+    baseScale=2.5/Math.max(size.x,size.y,size.z,.001);
+    model.scale.setScalar(baseScale*SETTINGS.startScale);
+    model.rotation.set(SETTINGS.startRX,SETTINGS.startRY,SETTINGS.startRZ);
+    scene.add(model);
+    // V3: единственный эксперимент — пропускаем предварительную компиляцию.
+    // Шейдеры будут скомпилированы браузером при первом renderer.render().
+    // Метрика time.compile ниже измеряет JS-длительность первого render,
+    // а НЕ чистое время компиляции GPU.
+    status.textContent='Подготовка первого кадра...';
+    await nextFrame();
+    time.ready=stamp();
+    console.table({...time,meshopt:usesMeshopt,megabytes:buffer.byteLength/1048576,animationClips:gltf.animations.length});
+    startAnimation();
+  }catch(error){status.textContent='ERROR: '+error.message;console.error('[HEAD TBT TEST]',error);}
+  updatePanel();
+}
+</script>
